@@ -13,7 +13,7 @@ function Home() {
         <img
           src="/assets/bg-chambritas.jpg"
           alt="Fondo"
-          className="absolute inset-0 w-full h-full object-cover opacity-85"
+          className="absolute inset-0 w-full h-full object-cover opacity-70"
         />
         
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
@@ -37,7 +37,7 @@ function Home() {
       </div>
       
       <div className='w-full text-center px-8'>
-        <p className='font-bold text-gray-400 text-3xl pb-6'>Tenemos de todo para tu chambrita</p>
+        <p className='font-bold text-gray-400 text-3xl pb-6'>Todo para tus chambritas</p>
         <div className='grid grid-cols-1'>
           <div className="relative w-full h-64 bg-black rounded-lg">
             <img

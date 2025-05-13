@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from 'react-router-dom'
 import { ShoppingCartIcon, UserCircleIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function Navbar() {
@@ -8,7 +9,7 @@ export default function Navbar() {
     <nav className="bg-white">
       <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between p-2">
         <a href="#" className="flex items-center space-x-3">
-          <img src="/assets/logo.svg" className="h-26" alt="Logo" />
+          <img src="/assets/todo-chambritas-logo.svg" className="h-26" alt="Logo" />
         </a>
 
         <div className="w-full md:w-1/3 order-last md:order-none mt-4 md:mt-0 mx-auto">
@@ -32,9 +33,11 @@ export default function Navbar() {
             <ShoppingCartIcon className="w-6 h-6" />
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">3</span>
           </button>
-          <button className="p-2 text-gray-700 hover:text-[#9c493e]">
-            <UserCircleIcon className="w-6 h-6" />
-          </button>
+          <Link to="/login">
+            <button className="p-2 text-gray-700 hover:text-[#9c493e]">
+              <UserCircleIcon className="w-6 h-6" />
+            </button>
+          </Link>
         </div>
 
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-gray-700 hover:text-[#9c493e]">
