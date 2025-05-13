@@ -1,6 +1,7 @@
 import './index.css'
 import Navbar from './components/navbar'
 import Card2 from './components/card2'
+import Footer from './components/footer'
 
 function Home() {
 
@@ -53,7 +54,7 @@ function Home() {
           </div>
         </div>
 
-         <div className='grid grid-cols-1 md:grid-cols-3 py-6 gap-6'>
+         <div className='grid grid-cols-1 md:grid-cols-3 py-6 gap-6 pb-12'>
           <div className="relative w-full h-64 bg-black rounded-lg">
             <img
               src="/assets/bg-agujas.jpg"
@@ -98,6 +99,8 @@ function Home() {
           
         </div>
       </div>
+
+      <Footer />
     </div>
     </>
   )
