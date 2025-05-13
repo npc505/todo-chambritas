@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Card = () => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm grid items-center justify-center">

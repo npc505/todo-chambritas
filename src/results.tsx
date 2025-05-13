@@ -1,7 +1,7 @@
-import './App.css'
+import './index.css'
 import Card from './components/cards'
 
-function App() {
+function Home() {
 
   return (
     <>
@@ -70,4 +70,4 @@ function App() {
   )
 }
 
-export default App
+export default Home
