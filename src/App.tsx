@@ -1,4 +1,5 @@
 import './App.css'
+import Card from './components/cards'
 
 function App() {
 
@@ -58,6 +59,12 @@ function App() {
         </div>
       </nav>
 
+      <div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-10 m-10 justify-center items-center'>
+      <Card />
+      <Card />
+      <Card />
+      <Card />
+      </div>
     </div>
     </>
   )
