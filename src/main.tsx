@@ -9,6 +9,7 @@ import Estambre from './estambre'
 import Agujas from './agujas'
 import Accesorios from './accesorios'
 import Herramientas from './herramientas'
+import Registro from './registro'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/agujas" element={<Agujas />}  />
         <Route path="/accesorios" element={<Accesorios />}  />
         <Route path="/herramientas" element={<Herramientas />}  />
+        <Route path="/registro" element={< Registro/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
