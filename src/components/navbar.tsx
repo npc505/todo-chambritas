@@ -8,9 +8,11 @@ export default function Navbar() {
   return (
     <nav className="bg-white">
       <div className="max-w-screen-xl mx-auto flex flex-wrap items-center justify-between p-2">
-        <a href="#" className="flex items-center space-x-3">
-          <img src="/assets/todo-chambritas-logo.svg" className="h-26" alt="Logo" />
-        </a>
+        <Link to="/">
+          <a href="#" className="flex items-center space-x-3">
+            <img src="/assets/todo-chambritas-logo.svg" className="h-26" alt="Logo" />
+          </a>
+        </Link>
 
         <div className="w-full md:w-1/3 order-last md:order-none mt-4 md:mt-0 mx-auto">
           <div className="relative">
@@ -47,8 +49,12 @@ export default function Navbar() {
 
       <div className={`bg-[#bf795e] p-4 transition-all duration-300 ${menuOpen ? 'block' : 'hidden'} md:block`}>
         <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+          <Link to="/">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Home</a>
+          </Link>
+          <Link to="/description">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Estambre</a>
+          </Link>
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Agujas</a>
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Accesorios & Decoraciones</a>
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Herramientas</a>
