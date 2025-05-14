@@ -1,7 +1,7 @@
 import './index.css'
 import Navbar from './components/navbar'
 import Footer from './components/footer'
-
+import { Link } from 'react-router-dom'
 function Login() {
 
   return (
@@ -42,7 +42,10 @@ function Login() {
                             </div>
                             <p className='text-white text-xs text-right mt-2 underline cursor-pointer mb-4'>Olvidé mi contraseña</p>
                             <a className="p-4 rounded-full bg-[#bf795e] mt-18 text-white font-semibold text-lg px-8 hover:bg-[#9c493e]">Iniciar Sesión</a>
-                            <p className='text-white pt-6 underline cursor-pointer'>Crear cuenta</p>
+                            <Link to="/registro">
+    <p className='text-white pt-6 underline cursor-pointer'>Crear cuenta</p>
+  </Link>
+
                             <div className='flex flex-col items-center justify-center mt-6'>
                                 <div className='bg-white h-[1px] w-80'></div>
                                     <div className='bg-white rounded-full p-2 mt-6'>
