@@ -1,4 +1,5 @@
 import './index.css'
+import { Link } from 'react-router-dom'
 import Navbar from './components/navbar'
 import Footer from './components/footer'
 
@@ -12,13 +13,13 @@ function Registro() {
         <div>
             <div className="relative w-full h-full">
                 <img
-                src="/assets/bg-estambre-login.jpg"
+                src="/assets/bg-estambre-register.jpg"
                 alt="Fondo"
                 className="absolute inset-0 w-full h-[920px] object-cover brightness-90"
                 />
 
                 <div className="relative z-10 flex items-center justify-center h-screen">
-                <div className="backdrop-blur-sm bg-gray-300/40 border border-gray-200/20 rounded-lg p-6 shadow-md w-[600px] h-[750px] text-center">
+                <div className="backdrop-blur-sm bg-gray-300/40 border border-gray-200/20 rounded-lg p-6 shadow-md w-[600px] h-[770px] text-center mt-26">
                     <div className='border-4 border-white rounded-lg h-full p-4'>
                         <p className="font-bold text-3xl text-white mt-4">Registro</p>
                         
@@ -94,11 +95,15 @@ function Registro() {
                             <input type="checkbox" className="w-4 h-4 text-blue-600 bg-transparent border-white rounded focus:ring-blue-500" />
                             <label className="ms-2 text-sm text-white">Acepto los términos y condiciones</label>
                         </div>
-                        <div className="mt-6">
+                        <div className="mb-4 mt-8">
                             <a className="p-4 rounded-full bg-[#bf795e] text-white font-semibold text-lg px-8 hover:bg-[#9c493e] cursor-pointer">Crear Cuenta</a>
                         </div>
                         
-                        <p className='text-white pt-4'>¿Ya tienes una cuenta? <span className="underline cursor-pointer">Iniciar sesión</span></p>
+                        <p className='text-white pt-4'>¿Ya tienes una cuenta? 
+                                    <Link to="/login">
+                                    <a className="underline cursor-pointer pl-2">Iniciar sesión</a>
+                                    </Link> 
+                                    </p>
                         
                         
                      
