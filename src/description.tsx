@@ -3,7 +3,7 @@ import Navbar from './components/navbar'
 import Footer from './components/footer'
 import Card from './components/cards'
 
-function Description() {
+function Agujas() {
 
 
 
@@ -25,4 +25,4 @@ function Description() {
       )
 }
 
-export default Description
+export default Agujas

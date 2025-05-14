@@ -52,12 +52,18 @@ export default function Navbar() {
           <Link to="/">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Home</a>
           </Link>
-          <Link to="/description">
+          <Link to="/estambre">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Estambre</a>
           </Link>
+          <Link to="/agujas">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Agujas</a>
+           </Link>
+           <Link to="/accesorios">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Accesorios & Decoraciones</a>
+          </Link>
+          <Link to="/herramientas">
           <a href="#" className="text-white font-semibold hover:text-[#9c493e]">Herramientas</a>
+          </Link>
         </div>
       </div>
     </nav>
