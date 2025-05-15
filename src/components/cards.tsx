@@ -85,6 +85,7 @@ const Card = () => {
             <p><span className="font-semibold">Fibra:</span> 100% acrílico</p>
             <p><span className="font-semibold">Grosor:</span> Grueso</p>
             <p><span className="font-semibold">Peso:</span> 100 grs.</p>
+            <p><span className="font-semibold">Largo:</span> 10 mts.</p>
             <p><span className="font-semibold">Calibre:</span> 22 = 10 cm</p>
             <p><span className="font-semibold">Agujas sugeridas:</span> 4.5mm</p>
             <p><span className="font-semibold">Ganchos sugeridos:</span> 4.5mm</p>
@@ -93,19 +94,18 @@ const Card = () => {
         
      
     <div className="flex items-center mb-4 mt-6">
-  <button className="w-10 h-10 flex items-center justify-center bg-[#d4a373] text-white text-xl font-bold rounded-full hover:bg-[#c08a5e] transition-colors duration-200">
-    −
-  </button>
-  <div className="w-16 h-10 flex items-center justify-center bg-white border border-gray-300 text-lg font-medium mx-2 rounded">
-    14
-  </div>
-  <button className="w-10 h-10 flex items-center justify-center bg-[#d4a373] text-white text-xl font-bold rounded-full hover:bg-[#c08a5e] transition-colors duration-200">
-    +
-  </button>
-</div>
+      <button className="w-10 h-10 flex items-center justify-center bg-[#d4a373] text-white text-xl font-bold rounded-full hover:bg-[#c08a5e] transition-colors duration-200">
+        −
+      </button>
+      <div className="w-16 h-10 flex items-center justify-center bg-white border border-gray-300 text-lg font-medium mx-2 rounded">
+        14
+      </div>
+      <button className="w-10 h-10 flex items-center justify-center bg-[#d4a373] text-white text-xl font-bold rounded-full hover:bg-[#c08a5e] transition-colors duration-200">
+        +
+      </button>
+    </div>
         
-        {/* Add to Cart Button */}
-        <button className="w-full bg-[#bf795e] hover:bg-[#a66a53] text-white py-4 px-4 rounded-full flex items-center justify-center text-xl font-medium tracking-wide">
+        <button className="w-full bg-[#bf795e] hover:bg-[#a66a53] text-white py-4 px-4 rounded-full flex items-center justify-center text-xl font-medium tracking-wide mt-4">
   AÑADIR AL CARRITO
 </button>
         
