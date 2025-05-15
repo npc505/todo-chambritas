@@ -3,7 +3,7 @@ const Cart = () => {
     <a href="#" className="flex flex-row items-center justify-center bg-white border border-gray-200 rounded-lg shadow-sm md:w-full">
         <img
             className="w-26 h-26 object-contain m-4 rounded"
-            src="public/assets/Estambre.png"
+            src="/assets/Estambre.png"
             alt="Estambre"
         />
         <div className="flex flex-col justify-between p-4 leading-normal">
