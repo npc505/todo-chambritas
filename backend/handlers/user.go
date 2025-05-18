@@ -36,12 +36,14 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), HASH_COST)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 		user := models.User{
@@ -82,6 +84,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 
 		if user == nil {
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized) //Para cuestiones de seguridad, no dar info de si existe o no tal usuario
+			return
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Contrasena), []byte(request.Password)); err != nil {
@@ -111,4 +114,17 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 
 	}
 
+}
+
+func MeHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims := r.Context().Value("userClaims").(*models.AppClaims)
+		user, err := repository.GetUserById(r.Context(), claims.UserId)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(user)
+	}
 }
