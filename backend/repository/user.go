@@ -13,24 +13,24 @@ type UserRepository interface {
 	Close() error
 }
 
-var implementation UserRepository
+// var implementation UserRepository
 
-func SetUserRepository(repository UserRepository) {
-	implementation = repository
-}
+// func SetUserRepository(repository UserRepository) {
+// 	implementation = repository
+// }
 
-func InsertUser(ctx context.Context, user *models.User) (uint64, error) {
-	return implementation.InsertUser(ctx, user)
-}
+// func InsertUser(ctx context.Context, user *models.User) (uint64, error) {
+// 	return implementation.InsertUser(ctx, user)
+// }
 
-func GetUserById(ctx context.Context, id uint64) (*models.User, error) {
-	return implementation.GetUserById(ctx, id)
-}
+// func GetUserById(ctx context.Context, id uint64) (*models.User, error) {
+// 	return implementation.GetUserById(ctx, id)
+// }
 
-func GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
-	return implementation.GetUserByEmail(ctx, email)
-}
+// func GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+// 	return implementation.GetUserByEmail(ctx, email)
+// }
 
-func Close() error {
-	return implementation.Close()
-}
+// func Close() error {
+// 	return implementation.Close()
+// }

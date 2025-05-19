@@ -44,5 +44,7 @@ func BindRoutes(s server.Server, r *mux.Router) error {
 	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods("POST")
 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods("POST")
 	r.HandleFunc("/me", handlers.MeHandler(s)).Methods("GET")
+	r.HandleFunc("/product", handlers.InsertProductHandler(s)).Methods("POST")
+	r.HandleFunc("/product/{id}", handlers.GetProductById(s)).Methods("POST")
 	return nil
 }

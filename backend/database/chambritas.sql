@@ -18,23 +18,32 @@ CREATE TABLE usuarios (
 
 CREATE TABLE productos (
   producto_id SERIAL PRIMARY KEY,
+
   nombre VARCHAR(120) NOT NULL,
-  calificacion DECIMAL(2,1),
   marca VARCHAR(120) NOT NULL,
-  codigo_color VARCHAR(6) NOT NULL,
+  codigo_color VARCHAR(8) NOT NULL,
+
+  -- Si quieres evitar productos duplicados por combinación de nombre + marca + color:
+  CONSTRAINT productos_unicos UNIQUE (nombre, marca, codigo_color),
+
+  calificacion DECIMAL(2,1) CHECK (calificacion >= 0 AND calificacion <= 5),
+
   descripcion VARCHAR(500),
-  precio DECIMAL(10,2) NOT NULL,
-  stock INTEGER NOT NULL,
+  precio DECIMAL(10,2) NOT NULL CHECK (precio >= 0),
+  stock INTEGER NOT NULL CHECK (stock >= 0),
+
   fibra VARCHAR(100),
   grosor grosor_enum,
-  peso DECIMAL(10,2),
-  largo DECIMAL(10,2),
-  calibre INTEGER,
-  agujas_sugeridas DECIMAL(5,2),
-  ganchos_sugeridos DECIMAL(5,2),
-  porcentaje_descuento DECIMAL(5,2),
+  peso DECIMAL(10,2) CHECK (peso >= 0),
+  largo DECIMAL(10,2) CHECK (largo >= 0),
+  calibre INTEGER CHECK (calibre >= 0),
+  agujas_sugeridas DECIMAL(5,2) CHECK (agujas_sugeridas >= 0),
+  ganchos_sugeridos DECIMAL(5,2) CHECK (ganchos_sugeridos >= 0),
+  porcentaje_descuento DECIMAL(5,2) DEFAULT 0 CHECK (porcentaje_descuento >= 0 AND porcentaje_descuento <= 100),
+  
   imagen_dir VARCHAR(255) NOT NULL
 );
+
 
 CREATE TABLE carrito_de_compras (
   usuario_id INTEGER NOT NULL,

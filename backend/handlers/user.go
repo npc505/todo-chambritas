@@ -7,7 +7,6 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/npc505/backend/models"
-	"github.com/npc505/backend/repository"
 	"github.com/npc505/backend/server"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -51,7 +50,7 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 			Contrasena: string(hashedPassword),
 		}
 
-		id, err := repository.InsertUser(r.Context(), &user)
+		id, err := s.UserRepo().InsertUser(r.Context(), &user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -76,7 +75,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
-		user, err := repository.GetUserByEmail(r.Context(), request.Email)
+		user, err := s.UserRepo().GetUserByEmail(r.Context(), request.Email)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -119,7 +118,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 func MeHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims := r.Context().Value("userClaims").(*models.AppClaims)
-		user, err := repository.GetUserById(r.Context(), claims.UserId)
+		user, err := s.UserRepo().GetUserById(r.Context(), claims.UserId)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return

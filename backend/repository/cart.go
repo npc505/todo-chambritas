@@ -14,24 +14,24 @@ type CartRepository interface {
 	Close() error
 }
 
-var cartImplementation CartRepository
+// var cartImplementation CartRepository
 
-func SetCartRepository(repo CartRepository) {
-	cartImplementation = repo
-}
+// func SetCartRepository(repo CartRepository) {
+// 	cartImplementation = repo
+// }
 
-func AddToCart(ctx context.Context, userId, productId int64, quantity int) error {
-	return cartImplementation.AddItemToCart(ctx, userId, productId, quantity)
-}
+// func AddToCart(ctx context.Context, userId, productId int64, quantity int) error {
+// 	return cartImplementation.AddItemToCart(ctx, userId, productId, quantity)
+// }
 
-func GetCartByUserId(ctx context.Context, userId int64) ([]*models.Cart, error) {
-	return cartImplementation.GetCartByUserId(ctx, userId)
-}
+// func GetCartByUserId(ctx context.Context, userId int64) ([]*models.Cart, error) {
+// 	return cartImplementation.GetCartByUserId(ctx, userId)
+// }
 
-func RemoveItemFromCart(ctx context.Context, userId, productId int64) error {
-	return cartImplementation.RemoveItemFromCart(ctx, userId, productId)
-}
+// func RemoveItemFromCart(ctx context.Context, userId, productId int64) error {
+// 	return cartImplementation.RemoveItemFromCart(ctx, userId, productId)
+// }
 
-func ClearCart(ctx context.Context, userId int64) error {
-	return cartImplementation.ClearCart(ctx, userId)
-}
+// func ClearCart(ctx context.Context, userId int64) error {
+// 	return cartImplementation.ClearCart(ctx, userId)
+// }

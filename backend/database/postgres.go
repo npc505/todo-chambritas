@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/npc505/backend/models"
 
@@ -80,22 +81,32 @@ func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string
 
 // Products
 
-func (repo *PostgresRepository) InsertProduct(ctx context.Context, product *models.Product) error {
-	_, err := repo.db.ExecContext(ctx, `
+func (repo *PostgresRepository) InsertProduct(ctx context.Context, product *models.Product) (uint64, error) {
+	row := repo.db.QueryRowContext(ctx, `
 		INSERT INTO productos
 		(nombre, calificacion, marca, codigo_color, descripcion, precio, stock, fibra, grosor, peso, largo, calibre, agujas_sugeridas, ganchos_sugeridos, porcentaje_descuento, imagen_dir)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+		RETURNING producto_id`,
 		product.Nombre, product.Calificacion, product.Marca, product.CodigoColor, product.Descripcion, product.Precio,
 		product.Stock, product.Fibra, product.Grosor, product.Peso, product.Largo, product.Calibre,
 		product.AgujasSugeridas, product.GanchosSugeridos, product.PorcentajeDescuento, product.ImagenDir,
 	)
-	return err
+	var id uint64
+	if err := row.Scan(&id); err != nil {
+		log.Printf("Error inserting product: %v", err)
+		return 0, err
+	}
+
+	return id, nil
 }
 
-func (repo *PostgresRepository) GetProductById(ctx context.Context, id int64) (*models.Product, error) {
+func (repo *PostgresRepository) GetProductById(ctx context.Context, id uint64) (*models.Product, error) {
 	row := repo.db.QueryRowContext(ctx, `
-		SELECT * FROM productos
-		WHERE producto_id = $1`, id)
+	SELECT producto_id, nombre, calificacion, marca, codigo_color, descripcion,
+	       precio, stock, fibra, grosor, peso, largo, calibre,
+	       agujas_sugeridas, ganchos_sugeridos, porcentaje_descuento, imagen_dir
+	FROM productos
+	WHERE producto_id = $1`, id)
 
 	var p models.Product
 	err := row.Scan(&p.ID, &p.Nombre, &p.Calificacion, &p.Marca, &p.CodigoColor, &p.Descripcion, &p.Precio, &p.Stock,
@@ -139,7 +150,7 @@ func (repo *PostgresRepository) UpdateProduct(ctx context.Context, product *mode
 	return err
 }
 
-func (repo *PostgresRepository) DeleteProduct(ctx context.Context, id int64) error {
+func (repo *PostgresRepository) DeleteProduct(ctx context.Context, id uint64) error {
 	_, err := repo.db.ExecContext(ctx, `
 		DELETE FROM productos
 		WHERE producto_id = $1`, id)
