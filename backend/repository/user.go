@@ -10,7 +10,6 @@ type UserRepository interface {
 	InsertUser(ctx context.Context, user *models.User) (uint64, error)
 	GetUserById(ctx context.Context, id uint64) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
-	Close() error
 }
 
 // var implementation UserRepository

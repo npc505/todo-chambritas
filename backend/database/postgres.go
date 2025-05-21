@@ -117,8 +117,8 @@ func (repo *PostgresRepository) GetProductById(ctx context.Context, id uint64) (
 	return &p, nil
 }
 
-func (repo *PostgresRepository) GetAllProducts(ctx context.Context) ([]*models.Product, error) {
-	rows, err := repo.db.QueryContext(ctx, `SELECT * FROM productos`)
+func (repo *PostgresRepository) ListProducts(ctx context.Context, page uint64, pageSize uint64) ([]*models.Product, error) {
+	rows, err := repo.db.QueryContext(ctx, `SELECT * FROM productos LIMIT $1 OFFSET $2`, pageSize, page*pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (repo *PostgresRepository) GetAllProducts(ctx context.Context) ([]*models.P
 	var products []*models.Product
 	for rows.Next() {
 		var p models.Product
-		err := rows.Scan(&p.ID, &p.Nombre, &p.Calificacion, &p.Marca, &p.CodigoColor, &p.Descripcion, &p.Precio, &p.Stock,
+		err := rows.Scan(&p.ID, &p.Nombre, &p.Marca, &p.CodigoColor, &p.Calificacion, &p.Descripcion, &p.Precio, &p.Stock,
 			&p.Fibra, &p.Grosor, &p.Peso, &p.Largo, &p.Calibre, &p.AgujasSugeridas, &p.GanchosSugeridos, &p.PorcentajeDescuento, &p.ImagenDir)
 		if err != nil {
 			return nil, err

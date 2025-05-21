@@ -9,7 +9,7 @@ import (
 type ProductRepository interface {
 	InsertProduct(ctx context.Context, product *models.Product) (uint64, error)
 	GetProductById(ctx context.Context, id uint64) (*models.Product, error)
-	GetAllProducts(ctx context.Context) ([]*models.Product, error)
+	ListProducts(ctx context.Context, page uint64, pageSize uint64) ([]*models.Product, error)
 	UpdateProduct(ctx context.Context, product *models.Product) error
 	DeleteProduct(ctx context.Context, id uint64) error
 	Close() error

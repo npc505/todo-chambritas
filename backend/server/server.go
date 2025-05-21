@@ -26,11 +26,9 @@ type Server interface {
 }
 
 type Broker struct {
-	config      *Config
-	router      *mux.Router
-	userRepo    repository.UserRepository
-	productRepo repository.ProductRepository
-	cartRepo    repository.CartRepository
+	config     *Config
+	router     *mux.Router
+	repository repository.Repository
 }
 
 func (b *Broker) Config() *Config {
@@ -38,13 +36,13 @@ func (b *Broker) Config() *Config {
 }
 
 func (b *Broker) UserRepo() repository.UserRepository {
-	return b.userRepo
+	return b.repository
 }
 func (b *Broker) ProductRepo() repository.ProductRepository {
-	return b.productRepo
+	return b.repository
 }
 func (b *Broker) CartRepo() repository.CartRepository {
-	return b.cartRepo
+	return b.repository
 }
 
 func NewServer(ctx context.Context, config *Config) (*Broker, error) {
@@ -83,9 +81,7 @@ func (b *Broker) Start(binder func(s Server, r *mux.Router) error) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	b.userRepo = repo
-	b.productRepo = repo
-	b.cartRepo = repo
+	b.repository = repo
 
 	log.Println("Starting server on port", b.Config().Port)
 	if err := http.ListenAndServe(b.Config().Port, b.corsHandler()); err != nil {

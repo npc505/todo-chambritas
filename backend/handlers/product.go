@@ -34,6 +34,10 @@ type ProductResponse struct {
 	ProductData
 }
 
+type ProductUpdateResponse struct {
+	Message string `json:"message"`
+}
+
 func InsertProductHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var ProductRequest = ProductData{}
@@ -95,6 +99,84 @@ func GetProductById(s server.Server) http.HandlerFunc {
 
 func UpdateProduct(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var ProductRequest = ProductData{}
+		if err := json.NewDecoder(r.Body).Decode(&ProductRequest); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
+		params := mux.Vars(r)
+		idStr := params["id"]
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			http.Error(w, "Invalid product ID", http.StatusBadRequest)
+			return
+		}
+		product := models.Product{
+			ID:                  id,
+			Nombre:              ProductRequest.Nombre,
+			Calificacion:        ProductRequest.Calificacion,
+			Marca:               ProductRequest.Marca,
+			CodigoColor:         ProductRequest.CodigoColor,
+			Descripcion:         ProductRequest.Descripcion,
+			Precio:              ProductRequest.Precio,
+			Stock:               ProductRequest.Stock,
+			Fibra:               ProductRequest.Fibra,
+			Grosor:              ProductRequest.Grosor,
+			Peso:                ProductRequest.Peso,
+			Largo:               ProductRequest.Largo,
+			Calibre:             ProductRequest.Calibre,
+			AgujasSugeridas:     ProductRequest.AgujasSugeridas,
+			GanchosSugeridos:    ProductRequest.GanchosSugeridos,
+			PorcentajeDescuento: ProductRequest.PorcentajeDescuento,
+			ImagenDir:           ProductRequest.ImagenDir,
+		}
+
+		err = s.ProductRepo().UpdateProduct(r.Context(), &product)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(ProductUpdateResponse{
+			Message: "Product updated",
+		})
+
+	}
+}
+
+func ListProduct(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		pageStr := r.URL.Query().Get("page")
+		pageSizeStr := r.URL.Query().Get("pageSize")
+
+		var page uint64 = 0
+		var pageSize uint64 = 30 // default page size
+
+		if pageStr != "" {
+			page, err = strconv.ParseUint(pageStr, 10, 64)
+			if err != nil {
+				http.Error(w, "Invalid page parameter", http.StatusBadRequest)
+				return
+			}
+		}
+
+		if pageSizeStr != "" {
+			pageSize, err = strconv.ParseUint(pageSizeStr, 10, 64)
+			if err != nil {
+				http.Error(w, "Invalid pageSize parameter", http.StatusBadRequest)
+				return
+			}
+		}
+
+		products, err := s.ProductRepo().ListProducts(r.Context(), page, pageSize)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(products)
 	}
 }

@@ -11,7 +11,6 @@ type CartRepository interface {
 	RemoveItemFromCart(ctx context.Context, userId int64, productId int64) error
 	GetCartByUserId(ctx context.Context, userId int64) ([]*models.Cart, error)
 	ClearCart(ctx context.Context, userId int64) error
-	Close() error
 }
 
 // var cartImplementation CartRepository

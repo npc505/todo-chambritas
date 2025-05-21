@@ -9,7 +9,7 @@ const (
 )
 
 type Product struct {
-	ID                  int64   `json:"id"`
+	ID                  uint64  `json:"id"`
 	Nombre              string  `json:"nombre"`
 	Calificacion        float32 `json:"calificacion"`
 	Marca               string  `json:"marca"`
