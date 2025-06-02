@@ -5,12 +5,11 @@ DROP TABLE IF EXISTS usuarios CASCADE;
 CREATE TYPE grosor_enum AS ENUM ('FINO', 'MEDIO', 'GRUESO');
 
 CREATE TABLE usuarios (
-  usuario_id SERIAL PRIMARY KEY,
-  nombre VARCHAR(120) NOT NULL,
+  usuario_id SERIAL PRIMARY KEY, 
+  nombre VARCHAR(120) NOT NULL, 
   apellido_paterno VARCHAR(120) NOT NULL,
-  apellido_materno VARCHAR(120) NOT NULL,
-  correo VARCHAR(120) NOT NULL UNIQUE,
-  contraseña CHAR(64) NOT NULL,
+  correo VARCHAR(120) NOT NULL UNIQUE, 
+  contraseña CHAR(64) NOT NULL, 
   celular VARCHAR(30) NOT NULL,
   fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   activo BOOLEAN NOT NULL DEFAULT TRUE
