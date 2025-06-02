@@ -1,6 +1,6 @@
 package models
 
-type Cart struct {
+type CartItem struct {
 	ProductoID          int64   `json:"producto_id"`
 	Nombre              string  `json:"nombre"`
 	Precio              float64 `json:"precio"`

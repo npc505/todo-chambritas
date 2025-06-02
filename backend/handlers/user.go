@@ -15,9 +15,18 @@ const (
 	HASH_COST = 8
 )
 
-type SignUpLoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+type SignUpRequest struct {
+	Nombre          string `json:"nombre"`
+	ApellidoPaterno string `json:"apellido_paterno"`
+	ApellidoMaterno string `json:"apellido_materno"`
+	Correo          string `json:"correo"`
+	Contrasena      string `json:"contrasena"`
+	Celular         string `json:"celular"`
+}
+
+type LoginRequest struct {
+	Correo     string `json:"correo"`
+	Contrasena string `json:"contrasena"`
 }
 
 type SignUpResponse struct {
@@ -31,14 +40,14 @@ type LoginResponse struct {
 
 func SignUpHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var request = SignUpLoginRequest{}
+		var request = SignUpRequest{}
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), HASH_COST)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Contrasena), HASH_COST)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -46,8 +55,12 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 		}
 
 		user := models.User{
-			Correo:     request.Email,
-			Contrasena: string(hashedPassword),
+			Nombre:          request.Nombre,
+			ApellidoPaterno: request.ApellidoPaterno,
+			ApellidoMaterno: request.ApellidoPaterno,
+			Correo:          request.Correo,
+			Contrasena:      string(hashedPassword),
+			Celular:         request.Celular,
 		}
 
 		id, err := s.UserRepo().InsertUser(r.Context(), &user)
@@ -68,14 +81,14 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 func LoginHandler(s server.Server) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		var request = SignUpLoginRequest{}
+		var request = LoginRequest{}
 		err := json.NewDecoder(r.Body).Decode(&request)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 
-		user, err := s.UserRepo().GetUserByEmail(r.Context(), request.Email)
+		user, err := s.UserRepo().GetUserByEmail(r.Context(), request.Correo)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -86,7 +99,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 			return
 		}
 
-		if err := bcrypt.CompareHashAndPassword([]byte(user.Contrasena), []byte(request.Password)); err != nil {
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Contrasena), []byte(request.Contrasena)); err != nil {
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized) //Para cuestiones de seguridad, no dar info de si existe o no tal usuario
 			return
 		}
@@ -115,9 +128,15 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 
 }
 
+// Debug
 func MeHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		claims := r.Context().Value("userClaims").(*models.AppClaims)
+		claims, ok := r.Context().Value("userClaims").(*models.AppClaims)
+		if !ok || claims == nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
 		user, err := s.UserRepo().GetUserById(r.Context(), claims.UserId)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)

@@ -12,6 +12,7 @@ type HomeResponse struct {
 	Status  bool   `json:"status"`
 }
 
+//Debug
 func HomeHanlder(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

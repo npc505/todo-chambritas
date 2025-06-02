@@ -157,7 +157,7 @@ func (repo *PostgresRepository) DeleteProduct(ctx context.Context, id uint64) er
 	return err
 }
 
-func (repo *PostgresRepository) AddItemToCart(ctx context.Context, userId int64, productId int64, quantity int) error {
+func (repo *PostgresRepository) AddItemToCart(ctx context.Context, userId uint64, productId uint64, quantity uint) error {
 	_, err := repo.db.ExecContext(ctx, `
 		INSERT INTO carrito_de_compras (usuario_id, producto_id, cantidad)
 		VALUES ($1, $2, $3)
@@ -166,14 +166,14 @@ func (repo *PostgresRepository) AddItemToCart(ctx context.Context, userId int64,
 	return err
 }
 
-func (repo *PostgresRepository) RemoveItemFromCart(ctx context.Context, userId int64, productId int64) error {
+func (repo *PostgresRepository) RemoveItemFromCart(ctx context.Context, userId uint64, productId uint64) error {
 	_, err := repo.db.ExecContext(ctx, `
 		DELETE FROM carrito_de_compras
 		WHERE usuario_id = $1 AND producto_id = $2`, userId, productId)
 	return err
 }
 
-func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId int64) ([]*models.Cart, error) {
+func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId uint64) ([]*models.CartItem, error) {
 	rows, err := repo.db.QueryContext(ctx, `
 		SELECT 
 			p.producto_id,
@@ -191,9 +191,9 @@ func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId int6
 	}
 	defer rows.Close()
 
-	var cartItems []*models.Cart
+	var cartItems []*models.CartItem
 	for rows.Next() {
-		var item models.Cart
+		var item models.CartItem
 		if err := rows.Scan(
 			&item.ProductoID,
 			&item.Nombre,
@@ -210,7 +210,7 @@ func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId int6
 	return cartItems, nil
 }
 
-func (repo *PostgresRepository) ClearCart(ctx context.Context, userId int64) error {
+func (repo *PostgresRepository) ClearCart(ctx context.Context, userId uint64) error {
 	_, err := repo.db.ExecContext(ctx, `
 		DELETE FROM carrito_de_compras
 		WHERE usuario_id = $1`, userId)

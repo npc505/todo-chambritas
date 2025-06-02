@@ -38,6 +38,7 @@ type ProductUpdateResponse struct {
 	Message string `json:"message"`
 }
 
+//Debug
 func InsertProductHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var ProductRequest = ProductData{}
@@ -78,6 +79,7 @@ func InsertProductHandler(s server.Server) http.HandlerFunc {
 
 	}
 }
+
 func GetProductById(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
@@ -97,6 +99,7 @@ func GetProductById(s server.Server) http.HandlerFunc {
 	}
 }
 
+//Debug
 func UpdateProduct(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var ProductRequest = ProductData{}
