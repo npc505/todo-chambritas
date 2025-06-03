@@ -3,9 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/npc505/backend/auth"
 	"github.com/npc505/backend/models"
 	"github.com/npc505/backend/server"
 	"golang.org/x/crypto/bcrypt"
@@ -104,15 +103,11 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 			return
 		}
 
-		claims := models.AppClaims{
-			UserId: user.ID,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(2 * time.Hour * 24).Unix(),
-			},
+		tokenString, err := auth.GenerateJWT(user.ID, s.Config().JWTSecret)
+		if err != nil {
+			http.Error(w, "Failed to sign token", http.StatusInternalServerError)
+			return
 		}
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, err := token.SignedString([]byte(s.Config().JWTSecret))
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -7,15 +7,17 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/npc505/backend/auth"
 	"github.com/npc505/backend/database"
 	"github.com/npc505/backend/repository"
 	"github.com/rs/cors"
 )
 
 type Config struct {
-	Port        string // puerto en el que se ejecutará el servidor
-	JWTSecret   string // llave secreta para generar tokens
-	DatabaseURL string //conexión a la base de datos
+	Port           string // puerto en el que se ejecutará el servidor
+	JWTSecret      string // llave secreta para generar tokens
+	DatabaseURL    string // conexión a la base de datos
+	GoogleClientID string // ID del cliente OAuth de Google
 }
 
 type Server interface {
@@ -23,12 +25,14 @@ type Server interface {
 	UserRepo() repository.UserRepository
 	ProductRepo() repository.ProductRepository
 	CartRepo() repository.CartRepository
+	AuthProvider() auth.AuthProvider
 }
 
 type Broker struct {
-	config     *Config
-	router     *mux.Router
-	repository repository.Repository
+	config       *Config
+	router       *mux.Router
+	repository   repository.Repository
+	authProvider auth.AuthProvider
 }
 
 func (b *Broker) Config() *Config {
@@ -45,6 +49,10 @@ func (b *Broker) CartRepo() repository.CartRepository {
 	return b.repository
 }
 
+func (b *Broker) AuthProvider() auth.AuthProvider {
+	return b.authProvider
+}
+
 func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 	if config.Port == "" {
 		return nil, errors.New("config.Port is required")
@@ -55,10 +63,16 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 	if config.DatabaseURL == "" {
 		return nil, errors.New("config.DatabaseURL is required")
 	}
+	if config.GoogleClientID == "" {
+		return nil, errors.New("config.GoogleClientID is required")
+	}
+
+	provider := auth.NewGoogleProvider(config.GoogleClientID)
 
 	broker := &Broker{
-		config: config,
-		router: mux.NewRouter(),
+		config:       config,
+		router:       mux.NewRouter(),
+		authProvider: provider,
 	}
 
 	return broker, nil

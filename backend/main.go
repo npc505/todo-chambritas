@@ -22,11 +22,13 @@ func main() {
 	PORT := os.Getenv("PORT")
 	JWT_SECRET := os.Getenv("JWT_SECRET")
 	DATABASE_URL := os.Getenv("DATABASE_URL")
+	GOOGLE_CLIENT_ID := os.Getenv("GOOGLE_CLIENT_ID")
 
 	config := &server.Config{
-		Port:        PORT,
-		JWTSecret:   JWT_SECRET,
-		DatabaseURL: DATABASE_URL,
+		Port:           PORT,
+		JWTSecret:      JWT_SECRET,
+		DatabaseURL:    DATABASE_URL,
+		GoogleClientID: GOOGLE_CLIENT_ID,
 	}
 
 	s, err := server.NewServer(context.Background(), config)
@@ -45,6 +47,7 @@ func BindRoutes(s server.Server, r *mux.Router) error {
 	//user
 	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods("POST")
 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods("POST")
+	r.HandleFunc("/login/google", handlers.GoogleLoginHandler(s)).Methods("POST")
 	r.HandleFunc("/me", handlers.MeHandler(s)).Methods("GET")
 
 	//products
