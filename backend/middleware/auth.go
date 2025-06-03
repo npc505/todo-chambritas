@@ -15,6 +15,7 @@ var (
 		"login",
 		"signup",
 		"products",
+		"auth",
 	}
 )
 
