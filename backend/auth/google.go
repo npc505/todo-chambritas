@@ -17,12 +17,8 @@ func NewGoogleProvider(clientID string) *GoogleProvider {
 
 func (g *GoogleProvider) ValidateToken(ctx context.Context, idToken string) (*AuthUser, error) {
 
-	fmt.Println("idToken:", idToken)
-	fmt.Println("----------------------")
-	fmt.Println("Client ID:", g.ClientID)
 	payload, err := idtoken.Validate(ctx, idToken, g.ClientID)
 	if err != nil {
-		fmt.Println("err:", err)
 		return nil, fmt.Errorf("token inválido: %w", err)
 	}
 

@@ -17,7 +17,6 @@ const (
 type SignUpRequest struct {
 	Nombre          string `json:"nombre"`
 	ApellidoPaterno string `json:"apellido_paterno"`
-	ApellidoMaterno string `json:"apellido_materno"`
 	Correo          string `json:"correo"`
 	Contrasena      string `json:"contrasena"`
 	Celular         string `json:"celular"`
@@ -56,7 +55,6 @@ func SignUpHandler(s server.Server) http.HandlerFunc {
 		user := models.User{
 			Nombre:          request.Nombre,
 			ApellidoPaterno: request.ApellidoPaterno,
-			ApellidoMaterno: request.ApellidoPaterno,
 			Correo:          request.Correo,
 			Contrasena:      string(hashedPassword),
 			Celular:         request.Celular,

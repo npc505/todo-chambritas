@@ -4,8 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
-	"encoding/base64"
 	"encoding/json"
+	"math/big"
 	"net/http"
 
 	"github.com/npc505/backend/auth"
@@ -18,12 +18,18 @@ type GoogleLoginRequest struct {
 	IDToken string `json:"id_token"`
 }
 
+const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
 func GenerateRandomPassword(length int) (string, error) {
-	bytes := make([]byte, length)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", err
+	password := make([]byte, length)
+	for i := 0; i < length; i++ {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		if err != nil {
+			return "", err
+		}
+		password[i] = letters[num.Int64()]
 	}
-	return base64.RawURLEncoding.EncodeToString(bytes)[:length], nil
+	return string(password), nil
 }
 
 func GoogleLoginHandler(s server.Server) http.HandlerFunc {

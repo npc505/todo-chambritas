@@ -35,10 +35,10 @@ func (repo *PostgresRepository) Close() error {
 func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) (uint64, error) {
 	row := repo.db.QueryRowContext(ctx, `
 		INSERT INTO usuarios
-		(nombre, apellido_paterno, apellido_materno, correo, contraseña, celular) 
-		VALUES ($1, $2, $3, $4, $5, $6)
+		(nombre, apellido_paterno, correo, contraseña, celular) 
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING usuario_id`,
-		user.Nombre, user.ApellidoPaterno, user.ApellidoMaterno, user.Correo, user.Contrasena, user.Celular,
+		user.Nombre, user.ApellidoPaterno, user.Correo, user.Contrasena, user.Celular,
 	)
 	var id uint64
 	if err := row.Scan(&id); err != nil {
@@ -49,12 +49,12 @@ func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.Use
 
 func (repo *PostgresRepository) GetUserById(ctx context.Context, id uint64) (*models.User, error) {
 	row := repo.db.QueryRowContext(ctx, `
-		SELECT usuario_id, nombre, apellido_paterno, apellido_materno, correo, celular, fecha_registro, activo
+		SELECT usuario_id, nombre, apellido_paterno, correo, celular, fecha_registro, activo
 		FROM usuarios
 		WHERE usuario_id = $1`, id)
 
 	var user models.User
-	err := row.Scan(&user.ID, &user.Nombre, &user.ApellidoPaterno, &user.ApellidoMaterno,
+	err := row.Scan(&user.ID, &user.Nombre, &user.ApellidoPaterno,
 		&user.Correo, &user.Celular, &user.FechaRegistro, &user.Activo)
 
 	if err != nil {
@@ -65,12 +65,12 @@ func (repo *PostgresRepository) GetUserById(ctx context.Context, id uint64) (*mo
 
 func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	row := repo.db.QueryRowContext(ctx, `
-		SELECT usuario_id, nombre, apellido_paterno, apellido_materno, correo, contraseña, celular, fecha_registro, activo
+		SELECT usuario_id, nombre, apellido_paterno, correo, contraseña, celular, fecha_registro, activo
 		FROM usuarios
 		WHERE correo = $1`, email)
 
 	var user models.User
-	err := row.Scan(&user.ID, &user.Nombre, &user.ApellidoPaterno, &user.ApellidoMaterno,
+	err := row.Scan(&user.ID, &user.Nombre, &user.ApellidoPaterno,
 		&user.Correo, &user.Contrasena, &user.Celular, &user.FechaRegistro, &user.Activo)
 
 	if err != nil {
