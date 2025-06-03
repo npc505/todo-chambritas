@@ -117,6 +117,22 @@ func (repo *PostgresRepository) GetProductById(ctx context.Context, id uint64) (
 	return &p, nil
 }
 
+func (repo *PostgresRepository) GetProductStock(ctx context.Context, id uint64) (*uint32, error) {
+	query := `
+		SELECT stock
+		FROM productos
+		WHERE producto_id = $1
+	`
+
+	var stock uint32
+	err := repo.db.QueryRowContext(ctx, query, id).Scan(&stock)
+	if err != nil {
+		return nil, err
+	}
+
+	return &stock, nil
+}
+
 func (repo *PostgresRepository) ListProducts(ctx context.Context, page uint64, pageSize uint64) ([]*models.Product, error) {
 	rows, err := repo.db.QueryContext(ctx, `SELECT * FROM productos LIMIT $1 OFFSET $2`, pageSize, page*pageSize)
 	if err != nil {
@@ -148,6 +164,7 @@ func (repo *PostgresRepository) UpdateProduct(ctx context.Context, product *mode
 		product.Stock, product.Fibra, product.Grosor, product.Peso, product.Largo, product.Calibre,
 		product.AgujasSugeridas, product.GanchosSugeridos, product.PorcentajeDescuento, product.ImagenDir, product.ID)
 	return err
+
 }
 
 func (repo *PostgresRepository) DeleteProduct(ctx context.Context, id uint64) error {
@@ -157,12 +174,13 @@ func (repo *PostgresRepository) DeleteProduct(ctx context.Context, id uint64) er
 	return err
 }
 
-func (repo *PostgresRepository) AddItemToCart(ctx context.Context, userId uint64, productId uint64, quantity uint) error {
+func (repo *PostgresRepository) UpsertCartItem(ctx context.Context, userId uint64, productId uint64, quantity uint32) error {
 	_, err := repo.db.ExecContext(ctx, `
 		INSERT INTO carrito_de_compras (usuario_id, producto_id, cantidad)
 		VALUES ($1, $2, $3)
 		ON CONFLICT (usuario_id, producto_id)
-		DO UPDATE SET cantidad = carrito_de_compras.cantidad + $3`, userId, productId, quantity)
+		DO UPDATE SET cantidad = EXCLUDED.cantidad`,
+		userId, productId, quantity)
 	return err
 }
 
@@ -178,11 +196,11 @@ func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId uint
 		SELECT 
 			p.producto_id,
 			p.nombre,
+			p.marca,
 			p.precio,
 			p.imagen_dir,
 			c.cantidad,
-			p.porcentaje_descuento,
-			p.stock
+			p.porcentaje_descuento
 		FROM carrito_de_compras c
 		JOIN productos p ON c.producto_id = p.producto_id
 		WHERE c.usuario_id = $1`, userId)
@@ -197,11 +215,11 @@ func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId uint
 		if err := rows.Scan(
 			&item.ProductoID,
 			&item.Nombre,
+			&item.Marca,
 			&item.Precio,
 			&item.ImagenDir,
 			&item.Cantidad,
 			&item.PorcentajeDescuento,
-			&item.Stock,
 		); err != nil {
 			return nil, err
 		}

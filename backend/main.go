@@ -41,12 +41,23 @@ func main() {
 func BindRoutes(s server.Server, r *mux.Router) error {
 	r.Use(middleware.CheckAuthMiddleware(s))
 	r.HandleFunc("/", handlers.HomeHanlder(s)).Methods("GET")
+
+	//user
 	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods("POST")
 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods("POST")
 	r.HandleFunc("/me", handlers.MeHandler(s)).Methods("GET")
+
+	//products
 	r.HandleFunc("/products", handlers.InsertProductHandler(s)).Methods("POST")
 	r.HandleFunc("/products/{id}", handlers.GetProductById(s)).Methods("GET")
 	r.HandleFunc("/products/{id}", handlers.UpdateProduct(s)).Methods("PUT")
 	r.HandleFunc("/products", handlers.ListProduct(s)).Methods("GET")
+
+	//cart
+	r.HandleFunc("/cart", handlers.GetCartHandler(s)).Methods("GET")                    // obtener carrito
+	r.HandleFunc("/cart/item", handlers.UpsertCartItemHandler(s)).Methods("PUT")        // actualizar cantidad (añadir producto y su cantidad)
+	r.HandleFunc("/cart/item", handlers.RemoveItemFromCartHandler(s)).Methods("DELETE") // quitar un item
+	r.HandleFunc("/cart", handlers.ClearCartHandler(s)).Methods("DELETE")               // limpiar carrito
+
 	return nil
 }

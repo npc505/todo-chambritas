@@ -17,12 +17,12 @@ type ProductData struct {
 	CodigoColor         string        `json:"codigo_color"`
 	Descripcion         string        `json:"descripcion"`
 	Precio              float64       `json:"precio"`
-	Stock               int           `json:"stock"`
+	Stock               uint32        `json:"stock"`
 	Fibra               string        `json:"fibra"`
 	Grosor              models.Grosor `json:"grosor"`
 	Peso                float64       `json:"peso"`
 	Largo               float64       `json:"largo"`
-	Calibre             int           `json:"calibre"`
+	Calibre             uint32        `json:"calibre"`
 	AgujasSugeridas     float64       `json:"agujas_sugeridas"`
 	GanchosSugeridos    float64       `json:"ganchos_sugeridos"`
 	PorcentajeDescuento float64       `json:"porcentaje_descuento"`
@@ -38,7 +38,7 @@ type ProductUpdateResponse struct {
 	Message string `json:"message"`
 }
 
-//Debug
+// Debug
 func InsertProductHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var ProductRequest = ProductData{}
@@ -99,7 +99,7 @@ func GetProductById(s server.Server) http.HandlerFunc {
 	}
 }
 
-//Debug
+// Debug
 func UpdateProduct(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var ProductRequest = ProductData{}
