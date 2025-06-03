@@ -80,8 +80,9 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 
 func (b *Broker) corsHandler() http.Handler {
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedOrigins: []string{"http://localhost:5501", "http://127.0.0.1:5501",
+			"http://localhost:5173", "http://127.0.0.1:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders:   []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	})
