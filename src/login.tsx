@@ -1,8 +1,48 @@
 import './index.css'
 import Navbar from './components/navbar'
 import Footer from './components/footer'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState,  } from 'react'
+
+import { useAuth } from './context/authContext' // importa el hook
+
 function Login() {
+  const [correo, setCorreo] = useState('')
+  const [contrasena, setContrasena] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const { setIsAuthenticated } = useAuth() // usa el hook
+
+  const handleLogin = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('http://localhost:5050/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ correo, contrasena })
+      })
+
+      if (!res.ok) {
+        throw new Error('Error al iniciar sesión')
+      }
+
+      const data = await res.json()
+      const tokenKey = import.meta.env.VITE_AUTH_TOKEN_KEY
+      localStorage.setItem(tokenKey, data.token)
+      setIsAuthenticated(true) // <- actualiza el contexto
+
+      navigate('/')
+    } catch (error) {
+      console.error('Login error:', error)
+      alert('Correo o contraseña incorrectos.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
 
   return (
     <>
@@ -18,7 +58,9 @@ function Login() {
                 />
 
                 <div className="relative z-10 flex items-center justify-center h-screen">
-                <div className="backdrop-blur-sm bg-gray-300/40 border border-gray-200/20 rounded-lg p-6 shadow-md w-[600px] h-[600px] text-center">
+                <div className="backdrop-blur-sm bg-gray-300/40 border border-gray-200/20 rounded-lg p-6 shadow-md w-[600px] h-[648px] text-center">
+                
+                
                     <div className='border-4 border-white rounded-lg h-full p-4'>
                         <p className="font-bold text-3xl text-white mt-6">Login</p>
                         <p className='text-white pt-6'>Correo Electrónico</p>
@@ -29,7 +71,13 @@ function Login() {
                                         <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
                                     </svg>
                                 </div>
-                                <input type="text" id="input-group-1" className="bg-tansparent border-2 border-white text-white text-sm rounded-lg block w-full ps-10 p-2.5 placeholder-white" placeholder="name@mail.com" />
+                                <input
+                                 type="text" 
+                                 id="input-group-1"
+                                className="bg-tansparent border-2 border-white text-white text-sm rounded-lg block w-full ps-10 p-2.5 placeholder-white" 
+                                value={correo}
+                                onChange={(e) => setCorreo(e.target.value)}
+                                placeholder="name@mail.com" />
                             </div>
                         <p className='text-white pt-6'>Contraseña</p>
                             <div className="relative mt-4">
@@ -38,10 +86,21 @@ function Login() {
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                                     </svg>
                                 </div>
-                                <input type="password" id="input-group-1" className="bg-tansparent border-2 border-white text-white text-sm rounded-lg block w-full ps-10 p-2.5 placeholder-white" placeholder="contraseña" />
+                                <input type="password"
+                                 id="input-group-1"
+                                  className="bg-tansparent border-2 border-white text-white text-sm rounded-lg block w-full ps-10 p-2.5 placeholder-white"
+                                 value={contrasena}
+                                onChange={(e) => setContrasena(e.target.value)}
+                                placeholder="contraseña" />
                             </div>
                             <p className='text-white text-xs text-right mt-2 underline cursor-pointer mb-4'>Olvidé mi contraseña</p>
-                            <a className="p-4 rounded-full bg-[#bf795e] mt-18 text-white font-semibold text-lg px-8 hover:bg-[#9c493e]">Iniciar Sesión</a>
+                            <button
+                            onClick={handleLogin}
+                            disabled={loading}
+                            className="p-4 rounded-full bg-[#bf795e] mt-4 text-white font-semibold text-lg px-8 hover:bg-[#9c493e] cursor-pointer"
+                            >
+                            {loading ? 'Iniciando...' : 'Iniciar Sesión'}
+                            </button>
                             <Link to="/registro">
                                 <p className='text-white pt-6 underline cursor-pointer'>Crear cuenta</p>
                             </Link>

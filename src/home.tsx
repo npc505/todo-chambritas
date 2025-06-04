@@ -1,9 +1,25 @@
+import { useEffect, useState } from 'react';
+
 import './index.css'
 import Navbar from './components/navbar'
-import Card2 from './components/card2'
+import CardCatalog from './components/cardCatalog'
 import Footer from './components/footer'
 
+import { fetchCatalog } from './api/catalogService';
+import type { Producto } from './types/producto';
+
+
 function Home() {
+
+
+  const [catalog, setCatalog] = useState<Producto[]>([]);
+
+  useEffect(() => {
+    fetchCatalog('http://localhost:5050/products')
+      .then(setCatalog)
+      .catch(error => console.error('Error al obtener el catálogo:', error));
+  }, []);
+
 
   return (
     <>
@@ -28,11 +44,20 @@ function Home() {
       <div className='w-full text-center p-8'>
         <p className='font-bold text-gray-400 text-3xl'>Top Picks</p>
         <div className='grid grid-cols-1 md:grid-cols-5 lg:grid-cols-5 p-6 gap-6'>
-          <Card2 />
-          <Card2 />
-          <Card2 />
-          <Card2 />
-          <Card2 />
+
+
+        {catalog.map((producto, index) => (
+        <CardCatalog
+          key={index}
+          id={producto.id}
+          nombre={producto.nombre}
+          calificacion={producto.calificacion}
+          precio={producto.precio}
+          imagenUrl={producto.imagen_dir}
+        />
+      ))}
+
+          
         </div>
       </div>
       

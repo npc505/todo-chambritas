@@ -1,28 +1,38 @@
 import './index.css'
 import Navbar from './components/navbar'
 import Footer from './components/footer'
-import Card from './components/cards'
+import CardProduct from './components/cardsProduct'
 
-function Agujas() {
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
+function Description() {
+  const { id } = useParams(); // id viene como string
+  const [producto, setProducto] = useState(null);
 
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:5050/products/${id}`)
+        .then(res => res.json())
+        .then(data => setProducto(data))
+        .catch(console.error);
+    }
+  }, [id]);
 
-    return (
-        <>
+  if (!producto) return <div>Cargando producto...</div>;
+
+  return (
+    <>
+      <Navbar />
+      <div className="grid grid-cols-1 p-8 mb-8">
         <div>
-          <Navbar />
-          <div className='grid grid-cols-1 p-8 mb-8'>
-            <div>
-               
-            <p className="text-4xl text-white font-bold">Agujas</p>
-
-            <Card/>
-            </div>      
-          </div>
-          <Footer />
+          <CardProduct producto={producto} />
         </div>
-        </>
-      )
+      </div>
+      <Footer />
+    </>
+  );
 }
 
-export default Agujas
+
+export default Description
