@@ -10,7 +10,7 @@ import Agujas from './agujas'
 import Accesorios from './accesorios'
 import Herramientas from './herramientas'
 import Registro from './registro'
-import { AuthProvider } from './context/authContext' // 👈 importa el AuthProvider
+import { AuthProvider } from './context/authContext' 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

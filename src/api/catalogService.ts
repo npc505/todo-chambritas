@@ -1,4 +1,4 @@
-import type { Producto } from  "../types/producto";
+import type { Producto } from  "../types/Producto";
 
 
 export async function fetchCatalog(url: string): Promise<Producto[]> {

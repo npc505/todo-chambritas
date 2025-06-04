@@ -6,7 +6,7 @@ import Footer from './components/footer'
 
 
 import { fetchCatalog } from './api/catalogService';
-import type { Producto } from './types/producto';
+import type { Producto } from './types/Producto';
 
 function Accesorios() {
 
@@ -33,7 +33,7 @@ function Accesorios() {
           nombre={producto.nombre}
           calificacion={producto.calificacion}
           precio={producto.precio}
-          imagenUrl={"/assets/estambre2.jpg"}
+          imagenUrl={producto.imagen_dir}
         />
       ))}
       

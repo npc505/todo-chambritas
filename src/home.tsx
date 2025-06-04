@@ -6,7 +6,7 @@ import CardCatalog from './components/cardCatalog'
 import Footer from './components/footer'
 
 import { fetchCatalog } from './api/catalogService';
-import type { Producto } from './types/producto';
+import type { Producto } from './types/Producto';
 
 
 function Home() {

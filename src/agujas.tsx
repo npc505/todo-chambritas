@@ -5,7 +5,7 @@ import Navbar from './components/navbar'
 import Footer from './components/footer'
 
 import { fetchCatalog } from './api/catalogService';
-import type { Producto } from './types/producto';
+import type { Producto } from './types/Producto';
 
 function Agujas() {
 
@@ -27,14 +27,14 @@ function Agujas() {
       <div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-10 m-10 justify-center items-center'>
         {catalog.map((producto, index) => (
         <CardCatalog
-            key={index}
-            id={producto.id}
-            nombre={producto.nombre}
-            calificacion={producto.calificacion}
-            precio={producto.precio}
-            imagenUrl={"/assets/estambre2.jpg"}
-          />
-        ))}
+          key={index}
+          id={producto.id}
+          nombre={producto.nombre}
+          calificacion={producto.calificacion}
+          precio={producto.precio}
+          imagenUrl={producto.imagen_dir}
+        />
+      ))}
       </div>
 
       <Footer />

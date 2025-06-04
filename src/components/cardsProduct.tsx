@@ -1,27 +1,68 @@
 import { useEffect, useState } from 'react';
-import type { Producto } from "../types/producto";
+import type { Producto } from "../types/Producto";
+import { Link, useNavigate } from 'react-router-dom'
 
 
-const crearIncrementador = (stock: number, cantidad: number, setCantidad: (valor: number) => void) => {
-  return () => {
-    if (cantidad < stock) {
-      setCantidad(cantidad + 1);
-    }
-  };
-};
+import { useAuth } from '../context/authContext'
 
 
-const cardProduct = ({ producto }: { producto: Producto }) => {
+const CardProduct = ({ producto }: { producto: Producto }) => {
+
+  const { isAuthenticated } = useAuth();
 
   const [cantidad, setCantidad] = useState<number>(1);
 
-  const incrementar = crearIncrementador(producto.stock, cantidad, setCantidad);
+    const incrementar = () => {
+    setCantidad(prev => (prev < producto.stock ? prev + 1 : prev));
+  };
 
   const decrementar = () => {
-    if (cantidad > 1) {
-      setCantidad(cantidad - 1);
-    }
+    setCantidad(prev => (prev > 1 ? prev - 1 : prev));
   };
+
+  const navigate = useNavigate();
+
+const handleAddToCart = async () => {
+  if (!isAuthenticated) {
+    navigate('/login');
+    return;
+  }
+
+  const tokenKey = import.meta.env.VITE_AUTH_TOKEN_KEY;
+  const token = localStorage.getItem(tokenKey);
+
+  if (!token) {
+    console.error('No JWT token found');
+    return;
+  }
+
+  console.log('ID del producto:', producto.id);
+  console.log('Cantidad:', cantidad);
+
+  try {
+    const response = await fetch(`http://localhost:5050/cart/${producto.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${token}`
+      },
+      body: JSON.stringify({ cantidad })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Producto añadido al carrito:', data);
+
+    
+    window.location.reload();
+
+  } catch (error) {
+    console.error('Fallo al añadir al carrito:', error);
+  }
+};
 
 
   return (
@@ -132,7 +173,10 @@ const cardProduct = ({ producto }: { producto: Producto }) => {
           </button>
         </div>
         
-        <button className="w-full bg-[#bf795e] hover:bg-[#a66a53] text-white py-4 px-4 rounded-full flex items-center justify-center text-xl font-medium tracking-wide mt-4">
+        <button 
+          onClick={handleAddToCart}
+          className="w-full bg-[#bf795e] hover:bg-[#a66a53] text-white py-4 px-4 rounded-full flex items-center justify-center text-xl font-medium tracking-wide mt-4"
+        >
           AÑADIR AL CARRITO
         </button>
       </div>
@@ -140,5 +184,5 @@ const cardProduct = ({ producto }: { producto: Producto }) => {
   );
 };
 
-export default cardProduct;
+export default CardProduct;
 
