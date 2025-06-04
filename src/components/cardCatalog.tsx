@@ -14,9 +14,9 @@ const CardCatalog = ({ id, nombre, calificacion, precio, imagenUrl }: CardCatalo
 
   return (
     <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-      <a href="#">
-        <img className="p-4 rounded-t-lg" src={imagenUrl} alt="product image" />
-      </a>
+        <div className='flex items-center justify-center h-56'>
+            <img className="p-4 rounded-t-lg object-contain" src={imagenUrl} alt="product image" />
+        </div>
       <div className="px-5 pb-5">
         <a href="#">
           <h5 className="text-xl font-semibold tracking-tight text-gray-900">
