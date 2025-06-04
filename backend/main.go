@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/npc505/backend/handlers"
 	"github.com/npc505/backend/middleware"
 	"github.com/npc505/backend/server"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -37,6 +39,9 @@ func main() {
 		log.Fatal("Error starting server", err)
 	}
 
+	hash, err := bcrypt.GenerateFromPassword([]byte("password"), 8)
+
+	fmt.Println(string(hash))
 	s.Start(BindRoutes)
 }
 
@@ -56,10 +61,11 @@ func BindRoutes(s server.Server, r *mux.Router) error {
 	r.HandleFunc("/products", handlers.ListProduct(s)).Methods("GET") //obtener todos los productos
 
 	//cart
-	r.HandleFunc("/cart", handlers.GetCartHandler(s)).Methods("GET")                    // obtener carrito
-	r.HandleFunc("/cart/item", handlers.UpsertCartItemHandler(s)).Methods("PUT")        // actualizar cantidad (añadir producto y su cantidad)
-	r.HandleFunc("/cart/item", handlers.RemoveItemFromCartHandler(s)).Methods("DELETE") // quitar un item del carrito
-	r.HandleFunc("/cart", handlers.ClearCartHandler(s)).Methods("DELETE")               // limpiar carrito
+	r.HandleFunc("/cart", handlers.GetCartHandler(s)).Methods("GET")                             // obtener carrito
+	r.HandleFunc("/cart/{producto_id}", handlers.AddToCartHandler(s)).Methods("POST")            // añade a lo que ya hay
+	r.HandleFunc("/cart/{producto_id}", handlers.UpdateCartItemHandler(s)).Methods("PUT")        // actualizar cantidad
+	r.HandleFunc("/cart/{producto_id}", handlers.RemoveItemFromCartHandler(s)).Methods("DELETE") // quitar item
+	r.HandleFunc("/cart", handlers.ClearCartHandler(s)).Methods("DELETE")                        // limpiar carrito
 
 	return nil
 }

@@ -8,4 +8,5 @@ type CartItem struct {
 	PorcentajeDescuento float64 `json:"porcentaje_descuento"`
 	ImagenDir           string  `json:"imagen_dir"`
 	Cantidad            uint    `json:"cantidad"`
+	Stock               uint    `json:"stock"`
 }

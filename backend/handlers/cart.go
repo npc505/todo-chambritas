@@ -1,25 +1,36 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/npc505/backend/models"
 	"github.com/npc505/backend/server"
 )
 
-type InsertUpdateToCartRequest struct {
-	ProductoID uint64 `json:"producto_id"`
-	Cantidad   uint32 `json:"cantidad"`
+type AddUpdateToCartItem struct {
+	Cantidad uint32 `json:"cantidad"`
 }
 
 type RemoveFromCartRequest struct {
 	ProductoID uint64 `json:"producto_id"`
 }
 
-func UpsertCartItemHandler(s server.Server) http.HandlerFunc {
+func UpdateCartItemHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req InsertUpdateToCartRequest
+		vars := mux.Vars(r)
+		productoIDStr := vars["producto_id"]
+
+		productoID, err := strconv.ParseUint(productoIDStr, 10, 64)
+		if err != nil {
+			http.Error(w, "ID de producto inválido", http.StatusBadRequest)
+			return
+		}
+
+		var req AddUpdateToCartItem
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -27,36 +38,42 @@ func UpsertCartItemHandler(s server.Server) http.HandlerFunc {
 
 		claims := r.Context().Value("userClaims").(*models.AppClaims)
 
-		// Obtener el stock actual del producto
-		stock, err := s.ProductRepo().GetProductStock(r.Context(), req.ProductoID)
-		if err != nil {
-			http.Error(w, "Error al obtener el stock del producto", http.StatusInternalServerError)
-			return
-		}
-		if stock == nil || *stock == 0 {
+		stock, err := s.ProductRepo().GetProductStock(r.Context(), productoID)
+		if err != nil || stock == nil || *stock == 0 {
 			http.Error(w, "Producto sin stock", http.StatusBadRequest)
 			return
 		}
 
-		// Ajustar cantidad si excede el stock
 		if req.Cantidad > *stock {
 			req.Cantidad = *stock
 		}
 
-		// Hacer el upsert al carrito
-		err = s.CartRepo().UpsertCartItem(r.Context(), claims.UserId, req.ProductoID, req.Cantidad)
+		err = s.CartRepo().UpsertCartItem(r.Context(), claims.UserId, productoID, req.Cantidad)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		w.WriteHeader(http.StatusOK)
+		resp := AddUpdateToCartItem{
+			Cantidad: req.Cantidad,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
 	}
 }
 
-func RemoveItemFromCartHandler(s server.Server) http.HandlerFunc {
+func AddToCartHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req RemoveFromCartRequest
+		vars := mux.Vars(r)
+		productoIDStr := vars["producto_id"]
+
+		productoID, err := strconv.ParseUint(productoIDStr, 10, 64)
+		if err != nil {
+			http.Error(w, "ID de producto inválido", http.StatusBadRequest)
+			return
+		}
+
+		var req AddUpdateToCartItem
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -64,7 +81,51 @@ func RemoveItemFromCartHandler(s server.Server) http.HandlerFunc {
 
 		claims := r.Context().Value("userClaims").(*models.AppClaims)
 
-		err := s.CartRepo().RemoveItemFromCart(r.Context(), claims.UserId, req.ProductoID)
+		stock, err := s.ProductRepo().GetProductStock(r.Context(), productoID)
+		if err != nil || stock == nil || *stock == 0 {
+			http.Error(w, "Producto sin stock", http.StatusBadRequest)
+			return
+		}
+
+		currentQty, err := s.CartRepo().GetCartQuantity(r.Context(), claims.UserId, productoID)
+		if err != nil && err != sql.ErrNoRows {
+			http.Error(w, "Error al obtener cantidad del carrito", http.StatusInternalServerError)
+			return
+		}
+
+		newQty := currentQty + req.Cantidad
+		if newQty > *stock {
+			newQty = *stock
+		}
+
+		err = s.CartRepo().UpsertCartItem(r.Context(), claims.UserId, productoID, newQty)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		resp := AddUpdateToCartItem{
+			Cantidad: newQty,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
+	}
+}
+
+func RemoveItemFromCartHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		productoIDStr := vars["producto_id"]
+
+		productoID, err := strconv.ParseUint(productoIDStr, 10, 64)
+		if err != nil {
+			http.Error(w, "ID de producto inválido", http.StatusBadRequest)
+			return
+		}
+
+		claims := r.Context().Value("userClaims").(*models.AppClaims)
+
+		err = s.CartRepo().RemoveItemFromCart(r.Context(), claims.UserId, productoID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

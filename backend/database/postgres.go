@@ -174,6 +174,27 @@ func (repo *PostgresRepository) DeleteProduct(ctx context.Context, id uint64) er
 	return err
 }
 
+func (repo *PostgresRepository) GetCartQuantity(ctx context.Context, userId uint64, productId uint64) (uint32, error) {
+	var cantidad uint32
+
+	err := repo.db.QueryRowContext(ctx, `
+		SELECT cantidad
+		FROM carrito_de_compras
+		WHERE usuario_id = $1 AND producto_id = $2`,
+		userId, productId).Scan(&cantidad)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// No hay registro, significa que no hay cantidad en el carrito aún
+			return 0, nil
+		}
+		// Otro error
+		return 0, err
+	}
+
+	return cantidad, nil
+}
+
 func (repo *PostgresRepository) UpsertCartItem(ctx context.Context, userId uint64, productId uint64, quantity uint32) error {
 	_, err := repo.db.ExecContext(ctx, `
 		INSERT INTO carrito_de_compras (usuario_id, producto_id, cantidad)
@@ -200,7 +221,8 @@ func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId uint
 			p.precio,
 			p.imagen_dir,
 			c.cantidad,
-			p.porcentaje_descuento
+			p.porcentaje_descuento,
+			p.stock
 		FROM carrito_de_compras c
 		JOIN productos p ON c.producto_id = p.producto_id
 		WHERE c.usuario_id = $1`, userId)
@@ -220,6 +242,7 @@ func (repo *PostgresRepository) GetCartByUserId(ctx context.Context, userId uint
 			&item.ImagenDir,
 			&item.Cantidad,
 			&item.PorcentajeDescuento,
+			&item.Stock,
 		); err != nil {
 			return nil, err
 		}
