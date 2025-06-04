@@ -70,9 +70,9 @@ function Registro() {
       }
 
       const data = await response.json()
-      // Aquí podrías hacer algo con la respuesta, por ejemplo:
+     
       alert(`Cuenta creada con éxito para ${data.email}`)
-      navigate('/login') // redirigir a login después de registro exitoso
+      navigate('/login') 
 
     } catch (e) {
       setError('Error en la conexión con el servidor.')

@@ -46,7 +46,6 @@ func GoogleLoginHandler(s server.Server) http.HandlerFunc {
 			return
 		}
 
-		// Buscar usuario por correo
 		user, err := s.UserRepo().GetUserByEmail(r.Context(), authUser.Email)
 		if err != nil && err != sql.ErrNoRows {
 			http.Error(w, "Error en base de datos", http.StatusInternalServerError)
@@ -65,7 +64,6 @@ func GoogleLoginHandler(s server.Server) http.HandlerFunc {
 			return
 		}
 
-		// Si no existe, lo creamos
 		if user == nil {
 			newUser := &models.User{
 				Nombre:          authUser.FirstName,
@@ -82,7 +80,6 @@ func GoogleLoginHandler(s server.Server) http.HandlerFunc {
 			user = newUser
 		}
 
-		// Generar JWT con el ID del usuario
 		token, err := auth.GenerateJWT(user.ID, s.Config().JWTSecret)
 		if err != nil {
 			http.Error(w, "Error generando token", http.StatusInternalServerError)

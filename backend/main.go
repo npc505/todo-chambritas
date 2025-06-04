@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/npc505/backend/handlers"
 	"github.com/npc505/backend/middleware"
 	"github.com/npc505/backend/server"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -39,9 +37,6 @@ func main() {
 		log.Fatal("Error starting server", err)
 	}
 
-	hash, err := bcrypt.GenerateFromPassword([]byte("password"), 8)
-
-	fmt.Println(string(hash))
 	s.Start(BindRoutes)
 }
 

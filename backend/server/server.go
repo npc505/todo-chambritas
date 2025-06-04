@@ -14,10 +14,10 @@ import (
 )
 
 type Config struct {
-	Port           string // puerto en el que se ejecutará el servidor
-	JWTSecret      string // llave secreta para generar tokens
-	DatabaseURL    string // conexión a la base de datos
-	GoogleClientID string // ID del cliente OAuth de Google
+	Port           string
+	JWTSecret      string
+	DatabaseURL    string
+	GoogleClientID string
 }
 
 type Server interface {
