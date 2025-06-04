@@ -11,7 +11,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Registro del driver de PostgreSQL
 
 type PostgresRepository struct {
 	db *sql.DB
@@ -30,7 +29,7 @@ func (repo *PostgresRepository) Close() error {
 	return repo.db.Close()
 }
 
-// Users
+
 
 func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) (uint64, error) {
 	row := repo.db.QueryRowContext(ctx, `
@@ -79,7 +78,7 @@ func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string
 	return &user, nil
 }
 
-// Products
+
 
 func (repo *PostgresRepository) InsertProduct(ctx context.Context, product *models.Product) (uint64, error) {
 	row := repo.db.QueryRowContext(ctx, `

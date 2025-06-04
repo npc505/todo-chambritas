@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -98,6 +99,8 @@ func AddToCartHandler(s server.Server) http.HandlerFunc {
 			newQty = *stock
 		}
 
+		fmt.Println(productoID, req)
+
 		err = s.CartRepo().UpsertCartItem(r.Context(), claims.UserId, productoID, newQty)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -154,6 +157,7 @@ func GetCartHandler(s server.Server) http.HandlerFunc {
 		claims := r.Context().Value("userClaims").(*models.AppClaims)
 
 		items, err := s.CartRepo().GetCartByUserId(r.Context(), claims.UserId)
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

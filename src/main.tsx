@@ -10,20 +10,23 @@ import Agujas from './agujas'
 import Accesorios from './accesorios'
 import Herramientas from './herramientas'
 import Registro from './registro'
+import { AuthProvider } from './context/authContext' 
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/description" element={<Description />}  />
-        <Route path="/estambre" element={<Estambre />}  />
-        <Route path="/agujas" element={<Agujas />}  />
-        <Route path="/accesorios" element={<Accesorios />}  />
-        <Route path="/herramientas" element={<Herramientas />}  />
-        <Route path="/registro" element={< Registro/>} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/description/:id" element={<Description />} />
+          <Route path="/estambre" element={<Estambre />} />
+          <Route path="/agujas" element={<Agujas />} />
+          <Route path="/accesorios" element={<Accesorios />} />
+          <Route path="/herramientas" element={<Herramientas />} />
+          <Route path="/registro" element={<Registro />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>,
 )
